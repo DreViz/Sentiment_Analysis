@@ -1,5 +1,5 @@
 beautifulsoup4==4.10.0
 streamlit==1.8.0
-streamlit-lottie==0.1.1
+streamlit-lottie==0.0.5
 torch==1.10.0
 transformers==4.12.0
