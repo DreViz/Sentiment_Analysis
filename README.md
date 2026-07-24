@@ -1,14 +1,24 @@
-password = "***REMOVED***"
-# Define Lottie animation URLs
-animation_url1 = "https://lottie.host/c6295cfe-2be9-4d15-8330-5938bb95dc50/qb2Cd4E3Qw.json"
+# Sentiment Analysis
 
+A Streamlit app that performs sentiment analysis on text and Amazon product reviews using a RoBERTa model (`cardiffnlp/twitter-roberta-base-sentiment`). Negative reviews trigger an email alert.
 
-# Load Lottie animation data from URLs
-def load_lottie_url(url):
-    r = requests.get(url)
-    if r.status_code != 200:
-        return None
-    return r.json()
+## Setup
 
-# Display Lottie animations
-st_lottie(load_lottie_url(animation_url1), speed=1, height=100, key="lottie1")    
+1. Create a virtual environment and install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. Copy `.env.example` to `.env` and fill in your credentials:
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Run the app:
+   ```bash
+   streamlit run app.py
+   ```
+
+## Configuration
+
+Email alert credentials are read from environment variables (see `.env.example`). Never commit real credentials to the repository.

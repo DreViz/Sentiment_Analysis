@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import streamlit as st
 from streamlit_lottie import st_lottie
@@ -8,6 +9,10 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from dotenv import load_dotenv
+
+load_dotenv()
+
 animation_url1 = "https://lottie.host/dd7f2ccb-f1a4-46ab-9367-ac7a766c382f/1mpGXTnenM.json"
 
 
@@ -39,15 +44,15 @@ def analyze_sentiment(text):
 def scrape_amazon_reviews(product_url):
     response = requests.get(product_url)
     soup = BeautifulSoup(response.content, 'html.parser')
-    
+
     review_elements = soup.find_all("div", class_="a-section review aok-relative")
     reviews = []
-    for review_element in review_elements[:5]: 
-       
+    for review_element in review_elements[:5]:
+
         review_text = review_element.find("span", class_="review-text").text.strip()
 
         reviews.append(review_text)
-    
+
         sentiment_label, sentiment_score = analyze_sentiment(review_text)
         if sentiment_label == 'Negative':
             send_email_alert(review_text)  # Send email alert for negative review
@@ -56,11 +61,15 @@ def scrape_amazon_reviews(product_url):
 
 # Function to send email alert for negative review
 def send_email_alert(review_text):
+    sender_email = os.environ.get("SENDER_EMAIL")
+    receiver_email = os.environ.get("RECEIVER_EMAIL")
+    password = os.environ.get("EMAIL_PASSWORD")
 
-    sender_email = "***REMOVED_SENDER***@example.com"
-    receiver_email = "***REMOVED_RECEIVER***@example.com"
-    password = "***REMOVED***"
-
+    if not all([sender_email, receiver_email, password]):
+        raise RuntimeError(
+            "Missing email credentials. Set SENDER_EMAIL, RECEIVER_EMAIL, "
+            "and EMAIL_PASSWORD in your environment or .env file."
+        )
 
     message = MIMEMultipart()
     message["From"] = sender_email
@@ -100,4 +109,4 @@ with st.expander('URL of product'):
         else:
             st.write('No reviews found.')
 
-st_lottie(load_lottie_url(animation_url1), speed=1, height=200, key="lottie1")    
+st_lottie(load_lottie_url(animation_url1), speed=1, height=200, key="lottie1")
